@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fashion Retail Pricing Analysis</title>
+    <style>
+      :root {
+        --bg1: #0f172a;
+        --bg2: #1e293b;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #4f46e5;
+        --accent: #06b6d4;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, var(--bg1), var(--bg2));
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+      }
+
+      .hero {
+        background: rgba(255,255,255,0.08);
+        color: white;
+        padding: 32px 24px;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      }
+
+      .hero h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+      }
+
+      .hero p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1.05rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 28px;
+      }
+
+      .stat {
+        background: white;
+        padding: 22px 18px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 0.84rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 10px;
+      }
+
+      .value {
+        font-size: clamp(1.8rem, 3vw, 2.7rem);
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .card {
+        background: white;
+        border-radius: 18px;
+        padding: 28px 24px;
+        margin-top: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      }
+
+      h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-size: clamp(1.5rem, 2vw, 2rem);
+      }
+
+      .findings {
+        display: grid;
+        gap: 18px;
+      }
+
+      .finding {
+        border-left: 4px solid var(--primary);
+        padding-left: 16px;
+      }
+
+      .finding strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.06rem;
+      }
+
+      .finding p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      ul.recs {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .link-btn {
+        display: inline-block;
+        margin-top: 26px;
+        text-decoration: none;
+        background: var(--primary);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+
+      .link-btn:hover {
+        background: #4338ca;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="hero">
+        <h1>Fashion Retail Pricing Analysis</h1>
+        <p>SQL • Python • Pandas • Power BI</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Total Revenue</div>
+          <div class="value">$3.74M</div>
+        </div>
+        <div class="stat">
+          <div class="label">Gross Profit</div>
+          <div class="value">$1.59M</div>
+        </div>
+        <div class="stat">
+          <div class="label">Margin</div>
+          <div class="value">42.5%</div>
+        </div>
+        <div class="stat">
+          <div class="label">Discounted Orders</div>
+          <div class="value">43%</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Key Findings</h2>
+        <div class="findings">
+          <div class="finding">
+            <strong>Discounts grow units but shrink profit</strong>
+            <p>Moving from no discount to 31–40% off raises units per order from 2.2 to 3.1 (+43%), while profit per order falls from $63.8 to $17.8 (-72%).</p>
+          </div>
+
+          <div class="finding">
+            <strong>41%+ discounts are break-even at best</strong>
+            <p>These orders carry roughly 1% margin, and Footwear, Outerwear, and Activewear lose money at that discount depth.</p>
+          </div>
+
+          <div class="finding">
+            <strong>Accessories and Dresses respond best to discounts</strong>
+            <p>They have high margins and strong resale potential, making them the best candidates for targeted promotions.</p>
+          </div>
+
+          <div class="finding">
+            <strong>Seasonal promotions drag profitability</strong>
+            <p>January and July promo periods run ~75% discounted orders and reduce margin to ~37% versus ~45% in normal months.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Recommendations</h2>
+        <ul class="recs">
+          <li>Cap discounts at 20% for Footwear and Outerwear.</li>
+          <li>Avoid 40%+ sitewide promotions except explicit clearance events.</li>
+          <li>Promote Accessories, Dresses, and Tops instead of blanket discounts.</li>
+          <li>Use bundle offers or thresholds instead of broad markdowns.</li>
+          <li>Measure promotions using profit per order, not revenue or units.</li>
+        </ul>
+        <a class="link-btn" href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank">View GitHub Repository</a>
+      </div>
+    </div>
+  </body>
+</html>

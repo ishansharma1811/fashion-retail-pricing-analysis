@@ -1,629 +1,614 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fashion Retail Pricing Analysis</title>
-    <meta name="description" content="Fashion retail sales, discount, and profitability analysis using SQL, Python, and Power BI." />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Retail Pricing Analysis - Executive Dashboard</title>
+    <meta name="description" content="Advanced fashion retail pricing analysis with interactive insights on discounts, profitability, and category strategy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-      :root {
-        --bg: #081120;
-        --bg-2: #111827;
-        --panel: rgba(17, 24, 39, 0.72);
-        --panel-soft: rgba(255, 255, 255, 0.06);
-        --card: #ffffff;
-        --card-2: #f8fafc;
-        --text: #e5eefb;
-        --text-dark: #0f172a;
-        --muted: #93a4bd;
-        --primary: #7c3aed;
-        --primary-2: #a78bfa;
-        --secondary: #22c55e;
-        --secondary-2: #34d399;
-        --accent: #38bdf8;
-        --danger: #f97316;
-        --shadow: 0 25px 50px rgba(15, 23, 42, 0.55);
-      }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      * { box-sizing: border-box; }
-
-      html { scroll-behavior: smooth; }
-
-      body {
-        margin: 0;
-        font-family: Inter, "Segoe UI", Arial, sans-serif;
-        background:
-          radial-gradient(circle at top left, rgba(124, 58, 237, 0.35), transparent 28%),
-          radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 25%),
-          linear-gradient(160deg, var(--bg), var(--bg-2));
-        color: var(--text);
-      }
-
-      a { color: inherit; text-decoration: none; }
-
-      .container {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-      }
-
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 22px 0 18px;
-        color: var(--text);
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-
-      .brand-mark {
-        width: 36px;
-        height: 36px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--primary), var(--accent));
-        display: grid;
-        place-items: center;
-        font-size: 18px;
-        box-shadow: var(--shadow);
-      }
-
-      .nav {
-        display: flex;
-        gap: 22px;
-        align-items: center;
-        color: var(--muted);
-        font-size: 0.96rem;
-      }
-
-      .nav a:hover { color: var(--text); }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px 18px;
-        border-radius: 999px;
-        font-weight: 700;
-        border: 1px solid transparent;
-        transition: 0.2s ease;
-      }
-
-      .btn-primary {
-        background: linear-gradient(135deg, var(--primary), var(--accent));
-        color: white;
-        box-shadow: 0 15px 30px rgba(124, 58, 237, 0.35);
-      }
-
-      .btn-primary:hover { transform: translateY(-2px); }
-
-      .btn-secondary {
-        background: rgba(255,255,255,0.04);
-        color: var(--text);
-        border-color: rgba(255,255,255,0.09);
-      }
-
-      .hero {
-        padding: 30px 0 26px;
-      }
-
-      .hero-panel {
-        background: linear-gradient(135deg, rgba(124,58,237,0.16), rgba(34,197,94,0.09), rgba(56,189,248,0.1));
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 28px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-      }
-
-      .hero-copy {
-        padding: 52px 44px 42px;
-      }
-
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 0.8rem;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: #dfe9ff;
-        background: rgba(124,58,237,0.16);
-        border: 1px solid rgba(167,139,250,0.25);
-      }
-
-      h1 {
-        margin: 20px 0 18px;
-        font-size: clamp(2.3rem, 6vw, 4.5rem);
-        line-height: 0.98;
-        letter-spacing: -0.06em;
-      }
-
-      .hero-copy p {
-        width: min(620px, 100%);
-        color: var(--muted);
-        font-size: 1.08rem;
-        line-height: 1.7;
-      }
-
-      .cta-row {
-        display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-        margin-top: 26px;
-      }
-
-      .mini-data {
-        display: flex;
-        gap: 18px;
-        flex-wrap: wrap;
-        margin-top: 30px;
-      }
-
-      .mini-item {
-        min-width: 140px;
-      }
-
-      .mini-item .label {
-        display: block;
-        color: var(--muted);
-        font-size: 0.8rem;
-        margin-bottom: 6px;
-      }
-
-      .mini-item .value {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: white;
-      }
-
-      .hero-visual {
-        display: grid;
-        align-items: center;
-        padding: 26px 24px 26px 0;
-      }
-
-      .chart-card {
-        background: rgba(10, 15, 26, 0.72);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 24px;
-        padding: 22px 20px 18px;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-      }
-
-      .chart-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 18px;
-        color: var(--text);
-      }
-
-      .chart-head strong { font-size: 0.92rem; }
-
-      .dot-green {
-        width: 10px;
-        height: 10px;
-        background: var(--secondary);
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px;
-      }
-
-      .bars {
-        display: flex;
-        align-items: end;
-        gap: 12px;
-        height: 220px;
-        padding-top: 10px;
-      }
-
-      .bar-col {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: end;
-        align-items: center;
-        gap: 12px;
-        height: 100%;
-      }
-
-      .bar {
-        width: 100%;
-        max-width: 42px;
-        border-radius: 12px 12px 6px 6px;
-        background: linear-gradient(180deg, var(--primary-2), var(--primary));
-        box-shadow: 0 18px 26px rgba(124,58,237,0.25);
-      }
-
-      .bar:nth-child(2n) {
-        background: linear-gradient(180deg, var(--secondary-2), var(--secondary));
-      }
-
-      .bar-label {
-        color: var(--muted);
-        font-size: 0.76rem;
-      }
-
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
-        padding: 26px 0 12px;
-      }
-
-      .stat-card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
-        padding: 22px 18px;
-        box-shadow: var(--shadow);
-      }
-
-      .stat-card .label {
-        color: var(--muted);
-        font-size: 0.8rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 12px;
-      }
-
-      .stat-card .value {
-        font-size: clamp(1.8rem, 3vw, 2.2rem);
-        font-weight: 800;
-        color: white;
-      }
-
-      .stat-card .foot {
-        color: var(--muted);
-        margin-top: 8px;
-        font-size: 0.82rem;
-      }
-
-      .section {
-        padding: 28px 0 10px;
-      }
-
-      .split {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 24px;
-      }
-
-      .card {
-        background: rgba(255,255,255,0.96);
-        color: var(--text-dark);
-        border-radius: 24px;
-        padding: 28px 24px;
-        box-shadow: var(--shadow);
-      }
-
-      .card h2 {
-        margin: 0 0 18px;
-        font-size: clamp(1.6rem, 2vw, 2.2rem);
-        letter-spacing: -0.04em;
-      }
-
-      .findings {
-        display: grid;
-        gap: 18px;
-      }
-
-      .finding {
-        display: grid;
-        gap: 8px;
-        padding-left: 16px;
-        border-left: 3px solid var(--primary);
-      }
-
-      .finding strong {
-        font-size: 1.04rem;
-      }
-
-      .finding p {
-        margin: 0;
-        color: #475569;
-        line-height: 1.7;
-      }
-
-      .risk-board {
-        display: grid;
-        gap: 18px;
-      }
-
-      .risk-item {
-        background: var(--card-2);
-        border: 1px solid rgba(15, 23, 42, 0.06);
-        border-radius: 18px;
-        padding: 18px 16px;
-      }
-
-      .risk-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-      }
-
-      .risk-top strong {
-        font-size: 1rem;
-      }
-
-      .tag {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5px 10px;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
-      .tag.red { background: rgba(249,115,22,0.12); color: #c2410c; }
-      .tag.green { background: rgba(34,197,94,0.12); color: #166534; }
-      .tag.blue { background: rgba(59,130,246,0.12); color: #1d4ed8; }
-
-      .risk-item p {
-        margin: 0;
-        color: #475569;
-        line-height: 1.7;
-      }
-
-      .rec-card {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-      }
-
-      .recs {
-        display: grid;
-        gap: 14px;
-        padding-left: 20px;
-        margin: 0;
-        color: #334155;
-        line-height: 1.8;
-      }
-
-      .cta-panel {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin: 26px 0 60px;
-        padding: 28px 24px;
-        background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(56,189,248,0.18));
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-      }
-
-      .cta-panel h3 {
-        margin: 0 0 6px;
-        font-size: clamp(1.3rem, 2vw, 2rem);
-      }
-
-      .cta-panel p {
-        margin: 0;
-        color: var(--muted);
-      }
-
-      @media (max-width: 920px) {
-        .hero-grid,
-        .split {
-          grid-template-columns: 1fr;
+        :root {
+            --navy: #0a0e27;
+            --navy-light: #151932;
+            --navy-lighter: #1f2847;
+            --purple: #6d28d9;
+            --purple-light: #7c3aed;
+            --cyan: #06b6d4;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --white: #ffffff;
+            --gray-100: #f8fafc;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-900: #0f172a;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
         }
 
-        .hero-copy {
-          padding: 38px 22px 22px;
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 50%, var(--navy) 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            background: rgba(10, 14, 39, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 18px;
+        }
+
+        nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover { color: var(--text); }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            color: white;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--white), var(--text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-mini {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .stat-mini-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .stat-mini-value {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .hero-visual {
-          padding: 0 20px 20px;
+            position: relative;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.08));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
         }
 
-        .stats-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 640px) {
-        .topbar {
-          flex-wrap: wrap;
-          gap: 12px;
+        .chart-bar-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 200px;
+            margin-top: 20px;
         }
 
-        .nav {
-          width: 100%;
-          justify-content: space-between;
-          font-size: 0.83rem;
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--purple-light), var(--purple));
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            min-height: 40px;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .stats-grid {
-          grid-template-columns: 1fr;
+        .chart-bar:hover { filter: brightness(1.2); }
+
+        .chart-bar-1 { height: 40%; }
+        .chart-bar-2 { height: 55%; }
+        .chart-bar-3 { height: 70%; background: linear-gradient(180deg, var(--green), #059669); }
+        .chart-bar-4 { height: 85%; }
+        .chart-bar-5 { height: 95%; background: linear-gradient(180deg, var(--amber), #d97706); }
+        .chart-bar-6 { height: 100%; background: linear-gradient(180deg, var(--red), #dc2626); }
+
+        .chart-labels {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
-        .cta-panel {
-          flex-direction: column;
-          align-items: flex-start;
+        .chart-label { flex: 1; text-align: center; }
+
+        /* METRICS GRID */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 60px 0;
         }
-      }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(6, 182, 212, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 28px 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            border-color: rgba(124, 58, 237, 0.3);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.08));
+            transform: translateY(-4px);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--white), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* INSIGHTS SECTION */
+        .insights {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .insight-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--purple-light), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .insight-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .insight-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* RECOMMENDATIONS */
+        .recommendations {
+            padding: 60px 0;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .rec-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(6, 182, 212, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+        }
+
+        .rec-card h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rec-card p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(6, 182, 212, 0.1));
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            margin: 60px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .hero { grid-template-columns: 1fr; gap: 40px; }
+            .metrics { grid-template-columns: repeat(2, 1fr); }
+            .insights-grid { grid-template-columns: 1fr; }
+            .rec-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 640px) {
+            nav { gap: 16px; font-size: 12px; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .metrics { grid-template-columns: 1fr; }
+            .rec-grid { grid-template-columns: 1fr; }
+            .cta-section { padding: 40px 24px; }
+            .hero-stats { grid-template-columns: 1fr; }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="container">
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-mark">F</div>
-          <span>FASHION RETAIL</span>
-        </div>
-        <nav class="nav">
-          <a href="#insights">Insights</a>
-          <a href="#strategy">Strategy</a>
-          <a href="#results">Results</a>
-          <a class="btn btn-secondary" href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" rel="noreferrer">GitHub</a>
-        </nav>
-      </header>
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">F</div>
+                Fashion Analytics
+            </div>
+            <nav>
+                <a href="#metrics">Metrics</a>
+                <a href="#insights">Insights</a>
+                <a href="#strategy">Strategy</a>
+                <a href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" class="btn btn-primary">
+                    GitHub Repository
+                </a>
+            </nav>
+        </header>
 
-      <section class="hero">
-        <div class="hero-panel">
-          <div class="hero-grid">
-            <div class="hero-copy">
-              <span class="pill">Pricing Intelligence • SQL • Python • Power BI</span>
-              <h1>Fashion Retail Pricing Analysis</h1>
-              <p>
-                A full-stack analytics story evaluating how discount depth affects units, revenue,
-                profit, margin, and category-level performance across a fashion retail portfolio.
-              </p>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Fashion Retail Pricing Optimization</h1>
+                <p>Discover how discount depth impacts profitability, units, and margin across fashion categories. Data-driven insights for smarter pricing strategy.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-mini">
+                        <div class="stat-mini-label">Dataset</div>
+                        <div class="stat-mini-value">29,921</div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-label">Revenue</div>
+                        <div class="stat-mini-value">$3.74M</div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-label">Margin</div>
+                        <div class="stat-mini-value">42.5%</div>
+                    </div>
+                </div>
 
-              <div class="cta-row">
-                <a class="btn btn-primary" href="#results">See the results</a>
-                <a class="btn btn-secondary" href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" rel="noreferrer">Open repository</a>
-              </div>
-
-              <div class="mini-data">
-                <div class="mini-item">
-                  <span class="label">Transactions</span>
-                  <span class="value">29,921</span>
+                <div class="cta-buttons">
+                    <a href="#metrics" class="btn btn-primary">Explore Analysis</a>
+                    <a href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" class="btn btn-secondary">View Code</a>
                 </div>
-                <div class="mini-item">
-                  <span class="label">Revenue</span>
-                  <span class="value">$3.74M</span>
-                </div>
-                <div class="mini-item">
-                  <span class="label">Margin</span>
-                  <span class="value">42.5%</span>
-                </div>
-              </div>
             </div>
 
             <div class="hero-visual">
-              <div class="chart-card">
-                <div class="chart-head">
-                  <strong>Profit by discount band</strong>
-                  <span><span class="dot-green"></span> Avg profit/order</span>
+                <div style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">Profit per Order by Discount Band</div>
+                <div class="chart-bar-group">
+                    <div class="chart-bar chart-bar-1"></div>
+                    <div class="chart-bar chart-bar-2"></div>
+                    <div class="chart-bar chart-bar-3"></div>
+                    <div class="chart-bar chart-bar-4"></div>
+                    <div class="chart-bar chart-bar-5"></div>
+                    <div class="chart-bar chart-bar-6"></div>
                 </div>
-                <div class="bars" aria-label="Discount band chart">
-                  <div class="bar-col"><div class="bar" style="height: 28%;"></div><div class="bar-label">No disc</div></div>
-                  <div class="bar-col"><div class="bar" style="height: 44%;"></div><div class="bar-label">1-10%</div></div>
-                  <div class="bar-col"><div class="bar" style="height: 60%;"></div><div class="bar-label">11-20%</div></div>
-                  <div class="bar-col"><div class="bar" style="height: 72%;"></div><div class="bar-label">21-30%</div></div>
-                  <div class="bar-col"><div class="bar" style="height: 84%;"></div><div class="bar-label">31-40%</div></div>
-                  <div class="bar-col"><div class="bar" style="height: 96%;"></div><div class="bar-label">41%+</div></div>
+                <div class="chart-labels">
+                    <div class="chart-label">0%</div>
+                    <div class="chart-label">1-10%</div>
+                    <div class="chart-label">11-20%</div>
+                    <div class="chart-label">21-30%</div>
+                    <div class="chart-label">31-40%</div>
+                    <div class="chart-label">41%+</div>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="stats-grid" id="results">
-        <div class="stat-card">
-          <div class="label">Gross Profit</div>
-          <div class="value">$1.59M</div>
-          <div class="foot">Healthy blended margin</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Discounted Orders</div>
-          <div class="value">43%</div>
-          <div class="foot">Profit share only 32%</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Break-even</div>
-          <div class="value">41%+</div>
-          <div class="foot">Deep markdown zone</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Pricing Signal</div>
-          <div class="value">+43%</div>
-          <div class="foot">Unit lift, but margin erodes</div>
-        </div>
-      </section>
-
-      <section class="section" id="insights">
-        <div class="split">
-          <div class="card">
-            <h2>Key findings</h2>
-            <div class="findings">
-              <div class="finding">
-                <strong>Discounts increase volume but reduce profit per order.</strong>
-                <p>Moving from no discount to 31–40% off raises units per order from 2.2 to 3.1 (+43%), while profit per order falls from $63.8 to $17.8 (-72%).</p>
-              </div>
-
-              <div class="finding">
-                <strong>Deep markdowns are economically weak.</strong>
-                <p>Orders at 41%+ discounts deliver roughly 1% margin, and categories such as Footwear, Outerwear, and Activewear lose money at that depth.</p>
-              </div>
-
-              <div class="finding">
-                <strong>Best promotional candidates differ by category.</strong>
-                <p>Accessories and Dresses show the strongest discount responsiveness and higher margins, making them better targets for promotions than Footwear and Outerwear.</p>
-              </div>
+        <!-- METRICS -->
+        <section id="metrics" class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Total Revenue</div>
+                <div class="metric-value">$3.74M</div>
+                <div class="metric-sub">Across 7 categories and 6 cities</div>
             </div>
-          </div>
-
-          <div class="card">
-            <h2>Risk snapshot</h2>
-            <div class="risk-board">
-              <div class="risk-item">
-                <div class="risk-top">
-                  <strong>Footwear</strong>
-                  <span class="tag red">High risk</span>
-                </div>
-                <p>Low elasticity and thin margin means discounts erode profitability faster than they help revenue.</p>
-              </div>
-
-              <div class="risk-item">
-                <div class="risk-top">
-                  <strong>Accessories</strong>
-                  <span class="tag green">Healthy</span>
-                </div>
-                <p>Strong discount response and higher margin make it a tactical promotion category.</p>
-              </div>
-
-              <div class="risk-item">
-                <div class="risk-top">
-                  <strong>Seasonal sales</strong>
-                  <span class="tag blue">Monitor</span>
-                </div>
-                <p>Jan and Jul promo periods run ~75% discounted orders with margins around 37% versus ~45% in regular months.</p>
-              </div>
+            <div class="metric-card">
+                <div class="metric-label">Gross Profit</div>
+                <div class="metric-value">$1.59M</div>
+                <div class="metric-sub">42.5% blended margin</div>
             </div>
-          </div>
-        </div>
-      </section>
+            <div class="metric-card">
+                <div class="metric-label">Discounted Orders</div>
+                <div class="metric-value">43%</div>
+                <div class="metric-sub">But only 32% of profit</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Break-Even Point</div>
+                <div class="metric-value">41%+</div>
+                <div class="metric-sub">Deep markdown zone</div>
+            </div>
+        </section>
 
-      <section class="section" id="strategy">
-        <div class="card rec-card">
-          <h2>Recommended pricing strategy</h2>
-          <ul class="recs">
-            <li>Cap discounts at 20% for Footwear and Outerwear.</li>
-            <li>Avoid 40%+ sitewide markdowns except sealed clearance events.</li>
-            <li>Focus promotions on Accessories, Dresses, and Tops where volume lift offsets margin loss.</li>
-            <li>Use bundles and thresholds instead of blanket cuts to protect margin.</li>
-            <li>Measure success by profit per order rather than revenue or units alone.</li>
-          </ul>
-        </div>
-      </section>
+        <!-- INSIGHTS -->
+        <section id="insights" class="insights">
+            <h2 class="section-title">Key Findings</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">📊</div>
+                    <h3>Volume vs. Profit Trade-off</h3>
+                    <p>Moving from no discount to 31–40% off raises units per order by 43% but cuts profit per order by 72%. Deeper discounts attract more volume but erode margins significantly.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">⚠️</div>
+                    <h3>Break-Even at 41%+</h3>
+                    <p>Discounts at 41% or deeper yield approximately 1% margin. Footwear, Outerwear, and Activewear actually lose money at these depths.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <h3>Category Elasticity Varies</h3>
+                    <p>Accessories and Dresses show strong discount responsiveness (elasticity ~0.9) with high margins (54–47%), making them ideal promotion targets versus Footwear (34% margin, low elasticity).</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">📉</div>
+                    <h3>Seasonal Margin Drag</h3>
+                    <p>January and July end-of-season sales run 75% discounted orders, reducing margins to 37% versus 45% in regular months, despite similar revenue levels.</p>
+                </div>
+            </div>
+        </section>
 
-      <section class="cta-panel">
-        <div>
-          <h3>Turn data into pricing decisions.</h3>
-          <p>Explore the full repository and project notes for the complete analysis.</p>
+        <!-- RECOMMENDATIONS -->
+        <section id="strategy" class="recommendations">
+            <h2 class="section-title">Strategic Recommendations</h2>
+            <div class="rec-grid">
+                <div class="rec-card">
+                    <h4>✓ Cap Footwear & Outerwear Discounts</h4>
+                    <p>Limit to 20% maximum. Even 11–20% discounts cut profit per order by 33–41% in these low-margin categories.</p>
+                </div>
+                <div class="rec-card">
+                    <h4>✓ Focus on High-Elasticity Categories</h4>
+                    <p>Promote Accessories, Dresses, and Tops where volume lift more than offsets margin loss due to higher baseline margins.</p>
+                </div>
+                <div class="rec-card">
+                    <h4>✓ Avoid 40%+ Sitewide Promotions</h4>
+                    <p>Reserve ultra-deep markdowns for explicit clearance events only. Use bundles and thresholds instead to protect overall margin.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <div class="cta-section">
+            <h2>Ready to optimize your pricing strategy?</h2>
+            <p>Explore the complete analysis with SQL queries, Python scripts, and Power BI insights. Access the full source code and methodology.</p>
+            <a href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" class="btn btn-primary">
+                Visit GitHub Repository
+            </a>
         </div>
-        <a class="btn btn-primary" href="https://github.com/ishansharma1811/fashion-retail-pricing-analysis" target="_blank" rel="noreferrer">View source</a>
-      </section>
+
+        <!-- FOOTER -->
+        <footer>
+            <p>Fashion Retail Pricing Analysis • SQL • Python • Pandas • Power BI • Data-driven insights for retail strategy</p>
+        </footer>
     </div>
-  </body>
+</body>
 </html>

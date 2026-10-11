@@ -1,0 +1,43 @@
+category,discount_band,avg_units_per_txn,avg_profit_per_txn,transactions
+Accessories,No discount,2.21,33.27,2368
+Accessories,1-10%,2.48,31.82,440
+Accessories,11-20%,2.94,30.07,514
+Accessories,21-30%,3.2,24.5,438
+Accessories,31-40%,3.54,17.85,261
+Accessories,41%+,3.89,9.92,120
+Activewear,No discount,2.21,53.94,2082
+Activewear,1-10%,2.37,45.75,401
+Activewear,11-20%,2.6,38.57,456
+Activewear,21-30%,2.97,28.63,393
+Activewear,31-40%,3.05,14.71,220
+Activewear,41%+,3.11,-0.0,110
+Bottoms,No discount,2.17,62.87,2721
+Bottoms,1-10%,2.46,57.28,502
+Bottoms,11-20%,2.74,48.72,651
+Bottoms,21-30%,2.89,36.21,538
+Bottoms,31-40%,3.04,20.72,275
+Bottoms,41%+,3.61,4.06,119
+Dresses,No discount,2.16,82.66,2375
+Dresses,1-10%,2.5,78.53,439
+Dresses,11-20%,2.69,64.65,558
+Dresses,21-30%,3.09,53.64,458
+Dresses,31-40%,3.38,33.26,232
+Dresses,41%+,3.73,10.36,113
+Footwear,No discount,2.2,84.02,2238
+Footwear,1-10%,2.45,72.24,452
+Footwear,11-20%,2.46,49.77,495
+Footwear,21-30%,2.55,27.94,442
+Footwear,31-40%,2.8,5.08,253
+Footwear,41%+,2.91,-20.73,102
+Outerwear,No discount,2.15,117.84,1464
+Outerwear,1-10%,2.39,102.14,285
+Outerwear,11-20%,2.51,78.55,343
+Outerwear,21-30%,2.71,49.46,301
+Outerwear,31-40%,2.87,17.41,169
+Outerwear,41%+,3.13,-19.17,63
+Tops,No discount,2.23,43.57,3683
+Tops,1-10%,2.53,41.11,658
+Tops,11-20%,2.73,33.85,904
+Tops,21-30%,3.0,26.28,697
+Tops,31-40%,3.17,16.81,397
+Tops,41%+,3.48,6.1,191

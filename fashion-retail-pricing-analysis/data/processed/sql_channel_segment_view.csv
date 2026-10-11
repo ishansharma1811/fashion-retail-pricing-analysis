@@ -1,0 +1,7 @@
+channel,customer_segment,revenue,avg_discount_pct,margin_pct
+In-store,Returning,911757.0,10.7,42.7
+Online,Returning,786797.0,10.9,42.3
+In-store,New,599369.0,11.2,42.2
+Online,New,511568.0,10.5,42.6
+In-store,Loyalty,509626.0,10.7,42.5
+Online,Loyalty,423671.0,10.5,42.9
